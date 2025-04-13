@@ -1,0 +1,32 @@
+name: Try it
+
+on:
+  pull_request:
+    branches: [ "main" ]
+    paths:
+      - '**.sh'
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+jobs:
+  run:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    strategy:
+      # If this is true and any job fail, it will cancell all other jobs
+      fail-fast: true
+      matrix:
+        script: ['for_me.sh', 'for_all.sh']
+
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v4
+
+      - name: Run script ${{ matrix.script }}
+        run: ./${{ matrix.script }}
+        shell: bash
+
+      - name: Check font cache
+        run: fc-list | grep huninn
